@@ -17,6 +17,24 @@
           <li class="nav-item"><a href="<%= followers_user_path(@user) %>" class="nav-link <%= 'active' if current_page?(followers_user_path(@user)) %>">Followers  <span class="badge badge-secondary"><%= @count_followers %></span></a></li>
           <li class="nav-item"><a href="<%= likes_user_path(@user) %>" class="nav-link <%= 'active' if current_page?(likes_user_path(@user)) %>">Likes  <span class="badge badge-secondary"><%= @count_likes %></span></a></li>
         </ul>
-        <%= render 'users', users: @followings %>
+        <% @user.likes.each do |micropost| %>
+            <li class="media mb-3">
+              <img class="mr-2 rounded" src="<%= gravatar_url(micropost.user, { size: 50 }) %>" alt="">
+              <div class="media-body">
+                <div>
+                  <%= link_to micropost.user.name, user_path(micropost.user) %> <span class="text-muted">posted at <%= micropost.created_at %></span>
+                </div>
+                <div>
+                  <p><%= micropost.content %></p>
+                </div>
+                <div>
+                  <% if current_user == micropost.user %>
+                    <%= link_to "Delete", micropost, method: :delete, data: { confirm: "You sure?" }, class: 'btn btn-danger btn-sm' %>
+                  <% end %>
+                  <%= render 'favorites/favorite_button', micropost: micropost %>
+                </div>
+              </div>
+            </li>
+        <% end %>
     </div>
 </div>
